@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "966850018323",
+    "firebase_url": "https://kitchen-master-app.firebaseio.com",
+    "project_id": "kitchen-master-app",
+    "storage_bucket": "kitchen-master-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:966850018323:android:6555cb01482254da34d3e6",
+        "android_client_info": {
+          "package_name": "com.example.kitchenmasterapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "966850018323-fvgl9104mmg40pcs25fu31affrnmueqn.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.kitchenmasterapp",
+            "certificate_hash": "3f180f2cdbcacbc67b866a65028d5fa91b3c4e6b"
+          }
+        },
+        {
+          "client_id": "966850018323-9fluk474hd2hrq44oicp36aukn83r0e4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDErtqgsQGtgtwVuEyyfJ6NE0Os42xVx9c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "966850018323-9fluk474hd2hrq44oicp36aukn83r0e4.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

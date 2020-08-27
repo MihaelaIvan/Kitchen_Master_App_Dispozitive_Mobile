@@ -1,0 +1,28 @@
+<resources>
+    <string name="app_name">Kitchen Master App</string>
+    <!-- Strings related to login -->
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="swipe_left_for_login">Swipe Left for Login</string>
+    <string name="password">Password</string>
+    <string name="e_mail">Email</string>
+    <string name="tag">Join us and create your perfect recipe</string>
+    <string name="swipe_right_for_register">Swipe Right for Register</string>
+    <string name="register">Register</string>
+    <string name="login">Login</string>
+    <string name="re_type_password">Re-type Password</string>
+    <string name="your_name">Full Name</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="add_recipe">Add recipe</string>
+    <string name="e_name">Recipe name</string>
+    <string name="e_description">Recipe description</string>
+    <string name="e_nb_of_calories">Number of calories per 100g</string>
+    <string name="e_preparation_time">Preparation time</string>
+    <string name="e_ingredients">Ingredients</string>
+    <string name="take_picture">Take picture</string>
+    <string name="tv_recipes">Recipes</string>
+    <string name="tv_my_recipes">My recipes</string>
+    <string name="delete_recipe">Delete</string>
+    <string name="e_preparationTime">Preparation time</string>
+</resources>
