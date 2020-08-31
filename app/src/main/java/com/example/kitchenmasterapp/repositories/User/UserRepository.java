@@ -31,6 +31,11 @@ public class UserRepository {
         return  appDatabase.userDAO().getUserByEmail(email);
     }
 
+    public  User getUserByEmailAndNameString(String email, String name)
+    {
+        return  appDatabase.userDAO().getUserByEmailAndName(email, name);
+    }
+
     public String getUserPassword(String email)
     {
         return appDatabase.userDAO().getPasswordByEmail(email);

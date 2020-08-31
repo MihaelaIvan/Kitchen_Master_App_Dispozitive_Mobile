@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.example.kitchenmasterapp.repositories.User.UserRepository;
+import com.facebook.login.LoginManager;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -70,6 +71,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container_main,new MyRecipesFragment()).commit();
                 break;
             case R.id.nav_log_out:
+                LoginManager.getInstance().logOut();
+                //elimin valorile pastrate in SharedPreferences
+                SharedPreferences sharedPref = this.getSharedPreferences("com.example.kitchenmasterapp", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPref.edit();
+                editor.clear();
+                editor.apply();
                 Intent intent =  new Intent(this, FirstActivity.class);
                 startActivity(intent);
                 break;

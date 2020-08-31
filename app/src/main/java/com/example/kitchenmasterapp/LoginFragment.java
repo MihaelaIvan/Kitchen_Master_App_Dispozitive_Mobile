@@ -19,14 +19,33 @@ import android.widget.MediaController;
 import android.widget.Toast;
 import android.widget.VideoView;
 
+import com.bumptech.glide.request.RequestOptions;
 import com.example.kitchenmasterapp.database.User;
+import com.example.kitchenmasterapp.repositories.User.OnUserRepositoryActionListener;
 import com.example.kitchenmasterapp.repositories.User.UserRepository;
+import com.facebook.AccessToken;
+import com.facebook.AccessTokenTracker;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
+import com.facebook.login.LoginResult;
+import com.facebook.login.widget.LoginButton;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.Arrays;
 
 /**
  * A simple {@link Fragment} subclass.
  * create an instance of this fragment.
  */
 public class LoginFragment extends Fragment {
+
+    private LoginButton loginButton;
+    private CallbackManager callbackManager;
 
     //OnActivityFragmentCommunication onActivityFragmentCommunication;
 
@@ -41,6 +60,43 @@ public class LoginFragment extends Fragment {
 
         final EditText email = view.findViewById(R.id.et_email);
         final EditText password = view.findViewById(R.id.et_password);
+
+        loginButton = view.findViewById(R.id.login_button);
+
+        callbackManager = CallbackManager.Factory.create();
+        loginButton.setPermissions(Arrays.asList("email,public_profile"));
+        loginButton.setFragment(this);
+        CheckLoginStatus();
+
+        loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+            @Override
+            public void onSuccess(LoginResult loginResult) {
+                boolean loggedIn = AccessToken.getCurrentAccessToken() != null;
+                if (loggedIn){
+                    loginButton.setVisibility(View.GONE);
+                }
+                else{
+                    loginButton.setVisibility(View.VISIBLE);
+                }
+            }
+            @Override
+            public void onCancel() {
+
+            }
+
+            @Override
+            public void onError(FacebookException error) {
+
+            }
+        });
+
+        boolean loggedIn = AccessToken.getCurrentAccessToken() != null;
+        if (loggedIn){
+            loginButton.setVisibility(View.GONE);
+        }
+        else{
+            loginButton.setVisibility(View.VISIBLE);
+        }
 
         final GestureDetector gesture = new GestureDetector(getActivity(),
                 new GestureDetector.SimpleOnGestureListener() {
@@ -137,5 +193,94 @@ public class LoginFragment extends Fragment {
 
 
         return view;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        callbackManager.onActivityResult(requestCode,resultCode,data);
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    AccessTokenTracker accessTokenTracker = new AccessTokenTracker() {
+        @Override
+        protected void onCurrentAccessTokenChanged(AccessToken oldAccessToken, AccessToken currentAccessToken) {
+            if(currentAccessToken == null)
+            {
+                Toast.makeText(getContext(), "User logged out", Toast.LENGTH_LONG).show();
+            }
+            else{
+                loadUserProfile(currentAccessToken);
+            }
+        }
+    };
+
+    private void loadUserProfile(AccessToken newAccessToken){
+        GraphRequest request = GraphRequest.newMeRequest(newAccessToken, new GraphRequest.GraphJSONObjectCallback() {
+            @Override
+            public void onCompleted(JSONObject object, GraphResponse response) {
+                try {
+                    String first_name = object.getString("first_name");
+                    String last_name = object.getString("last_name");
+                    final String email = object.getString("email");
+                    final String user_name = first_name + " " + last_name;
+                    //Caut user-ul dupa nume si email si daca nu exista il inserez - email-ul este unic
+                    UserRepository userRepository = new UserRepository(getContext());
+                    //caut user-ul
+                    User user = userRepository.getUserByEmailAndNameString(email, user_name);
+
+                    //daca nu exista il inserez si pastrez id ul
+                    if(user == null)
+                    {
+                        final User userAdded = new User(user_name,"password1234", email);
+                        new UserRepository(getContext()).insertTask(userAdded, new OnUserRepositoryActionListener() {
+                            @Override
+                            public void actionSucces() {
+                                UserRepository userRep = new UserRepository(getContext());
+                                User userFound = userRep.getUser(email, "password1234");
+
+                                //Memorez userId in sharedPreferences
+                                SharedPreferences sharedPref = getActivity().getSharedPreferences("com.example.kitchenmasterapp", Context.MODE_PRIVATE);
+                                SharedPreferences.Editor editor = sharedPref.edit();
+                                editor.putInt("com.example.kitchenmasterapp.userId", userFound.getId());
+                                editor.apply();
+                            }
+                            @Override
+                            public void actionFailed() {
+
+                            }
+                        });
+                    }
+                    else //daca exista ii iau id-ul
+                    {
+                        //Memorez userId in sharedPreferences
+                        SharedPreferences sharedPref = getActivity().getSharedPreferences("com.example.kitchenmasterapp", Context.MODE_PRIVATE);
+                        SharedPreferences.Editor editor = sharedPref.edit();
+                        editor.putInt("com.example.kitchenmasterapp.userId", user.getId());
+                        editor.apply();
+                    }
+
+                    RequestOptions requestOptions = new RequestOptions();
+                    requestOptions.dontAnimate();
+
+                    Intent intent = new Intent(getActivity(), MainActivity.class);
+                    startActivity(intent);
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        Bundle parameters = new Bundle();
+        parameters.putString("fields","email,first_name,last_name");
+        request.setParameters(parameters);
+        request.executeAsync();
+    }
+
+    private void CheckLoginStatus()
+    {
+        if(AccessToken.getCurrentAccessToken() != null){
+            loadUserProfile(AccessToken.getCurrentAccessToken());
+        }
     }
 }

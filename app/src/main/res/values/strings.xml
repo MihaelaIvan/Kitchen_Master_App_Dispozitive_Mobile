@@ -25,4 +25,6 @@
     <string name="tv_my_recipes">My recipes</string>
     <string name="delete_recipe">Delete</string>
     <string name="e_preparationTime">Preparation time</string>
+    <string name="facebook_app_id">696890120935541</string>
+    <string name="fb_login_protocol_scheme">fb696890120935541</string>
 </resources>
